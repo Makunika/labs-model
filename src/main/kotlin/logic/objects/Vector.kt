@@ -32,7 +32,8 @@ data class Vector(var x: Double, var y: Double) {
     fun length(): Double = sqrt(x * x + y * y)
 
     fun rotate(normal: Vector): Vector {
-        return this.sub(normal.mul(2.0 * dot(normal, this)))
+        val n = normal.copy()
+        return this.sub(n.mul(2.0 * dot(n, this)))
     }
 
     fun normalize(): Vector {
