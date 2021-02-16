@@ -26,6 +26,7 @@ class Washer(val radius: Double, val weight: Double, vectorSpeed: Vector, x: Dou
                     Vector.dot(w1, v) <= 0 -> w1.length()
                     else -> abs(((wall.y1 - wall.y2) * x + (wall.x1 - wall.x2) * y + (wall.y1 * wall.x2 - wall.y2 * wall.x1)) / v.length())
                 }
+                println("wall = $wall, dist = $dist")
                 if (dist <= radius) {
                     if (dist != radius) {
                         speedRunner.sub(unitVector)
@@ -57,7 +58,7 @@ class Washer(val radius: Double, val weight: Double, vectorSpeed: Vector, x: Dou
 
 fun main() {
     val walls = arrayOf(Wall(0.0, 0.0, 0.0, 100.0))
-    val washer = Washer(1.0, 10.0, Vector(-15.0, 0.0), 15.5, 25.0)
+    val washer = Washer(10.0, 10.0, Vector(-15.0, 0.0), 15.0, -10.0)
     for (i in 0..2) {
         washer.move(walls)
     }
