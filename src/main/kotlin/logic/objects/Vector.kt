@@ -8,6 +8,9 @@ data class Vector(var x: Double, var y: Double) {
         fun dot(vector1: Vector, vector2: Vector) : Double = vector1.x * vector2.x + vector1.y * vector2.y
     }
 
+    constructor(x1: Double, y1: Double, x2: Double, y2: Double) : this(x2 - x1, y2 - y1)
+
+
     fun mul(number: Double): Vector {
         x *= number
         y *= number
@@ -38,6 +41,21 @@ data class Vector(var x: Double, var y: Double) {
 
     override fun toString(): String {
         return "Vector(x=$x, y=$y)"
+    }
+
+    fun copy() : Vector {
+        val vector = Vector(this.x, this.y);
+        return vector;
+    }
+
+    fun add(vector: Vector): Vector {
+        x += vector.x
+        y += vector.y
+        return this;
+    }
+
+    fun dist(vector: Vector) : Double {
+        return sqrt((vector.x - this.x) * (vector.x - this.x) + (vector.y - this.y) * (vector.y - this.y))
     }
 
 

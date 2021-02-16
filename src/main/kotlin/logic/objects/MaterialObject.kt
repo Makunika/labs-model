@@ -1,13 +1,9 @@
 package logic.objects
 
-import java.util.*
-
 abstract class MaterialObject(var vectorSpeed: Vector, var x: Double, var y: Double) {
 
-    abstract fun collision(nonSpeedObject: NonSpeedObject)
+    abstract fun move(walls: Array<Wall>)
 
-    fun move(time: Double) {
-        x += vectorSpeed.x * time
-        y += vectorSpeed.y * time
-    }
+    var time = 0
+        get() = field
 }

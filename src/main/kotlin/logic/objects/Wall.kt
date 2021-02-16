@@ -1,6 +1,6 @@
 package logic.objects
 
-class NonSpeedObject(val x1: Double, val y1: Double, val x2: Double, val y2: Double) {
+class Wall(val x1: Double, val y1: Double, val x2: Double, val y2: Double) {
 
     val normal: Vector = Vector(y2 - y1, -(x2 - x1)).normalize();
 
@@ -9,10 +9,4 @@ class NonSpeedObject(val x1: Double, val y1: Double, val x2: Double, val y2: Dou
     }
 
 
-}
-
-fun main() {
-    var nonSpeedObject = NonSpeedObject(0.0, 0.0, 10.0, 10.0);
-
-    print(nonSpeedObject)
 }
