@@ -7,12 +7,14 @@ class Washer(val radius: Double, val weight: Double, vectorSpeed: Vector, x: Dou
 
     override fun move(walls: Array<Wall>) {
         val unitVector = vectorSpeed.copy().normalize();
-        val speedRunner = vectorSpeed.copy()
+        val speedRunner = unitVector.copy()
         val speed = vectorSpeed.length()
         var distAfter: Double
         while (speed >= speedRunner.length()) {
+            println("unit = $unitVector, vectorSpeed = $vectorSpeed, speedRunner = $speedRunner")
             val x = speedRunner.x + this.x
             val y = speedRunner.y + this.y
+            println("x = $x, y = $y")
             for (wall in walls) {
                 val v = Vector(wall.x1, wall.y1, wall.x2, wall.y2);
                 val w0 = Vector(x, y, wall.x1, wall.y1)
@@ -26,10 +28,11 @@ class Washer(val radius: Double, val weight: Double, vectorSpeed: Vector, x: Dou
                     if (dist != radius) {
                         speedRunner.sub(unitVector)
                     }
+                    println("unit = $unitVector, vectorSpeed = $vectorSpeed, speedRunner = $speedRunner, dist = $dist")
                     speedRunner.rotate(wall.normal)
                     vectorSpeed.rotate(wall.normal)
                     unitVector.rotate(wall.normal)
-                    println("time = $time, rotate!, unit = $unitVector")
+                    println("rotate!, unit = $unitVector, vectorSpeed = $vectorSpeed, speedRunner = $speedRunner, dist = $dist")
                     break
                 }
             }
@@ -40,6 +43,7 @@ class Washer(val radius: Double, val weight: Double, vectorSpeed: Vector, x: Dou
         y += speedRunner.y
         println("time = $time, ${toString()}, unit = $unitVector")
         time++
+        println("exit, this = $this")
     }
 
     override fun toString(): String {
@@ -51,8 +55,8 @@ class Washer(val radius: Double, val weight: Double, vectorSpeed: Vector, x: Dou
 
 fun main() {
     val walls = arrayOf(Wall(0.0, 0.0, 0.0, 100.0))
-    val washer = Washer(10.0, 10.0, Vector(-10.0, 0.0), 205.5, 25.0)
-    for (i in 0..100) {
+    val washer = Washer(10.0, 10.0, Vector(-10.0, 0.0), 15.5, 25.0)
+    for (i in 0..2) {
         washer.move(walls)
     }
 
