@@ -10,10 +10,12 @@ class Washer(val radius: Double, val weight: Double, vectorSpeed: Vector, x: Dou
         val speedRunner = unitVector.copy()
         val speed = vectorSpeed.length()
         var distAfter: Double
+        var x = this.x
+        var y =  this.y
         while (speed >= speedRunner.length()) {
             println("unit = $unitVector, vectorSpeed = $vectorSpeed, speedRunner = $speedRunner")
-            val x = speedRunner.x + this.x
-            val y = speedRunner.y + this.y
+            x += unitVector.x
+            y += unitVector.y
             println("x = $x, y = $y")
             for (wall in walls) {
                 val v = Vector(wall.x1, wall.y1, wall.x2, wall.y2);
@@ -39,11 +41,11 @@ class Washer(val radius: Double, val weight: Double, vectorSpeed: Vector, x: Dou
             speedRunner.add(unitVector);
         }
         speedRunner.sub(unitVector)
-        x += speedRunner.x
-        y += speedRunner.y
+        this.x = x
+        this.y = y
         println("time = $time, ${toString()}, unit = $unitVector")
         time++
-        println("exit, this = $this")
+        println("exit, this = $this\n\n")
     }
 
     override fun toString(): String {
@@ -55,7 +57,7 @@ class Washer(val radius: Double, val weight: Double, vectorSpeed: Vector, x: Dou
 
 fun main() {
     val walls = arrayOf(Wall(0.0, 0.0, 0.0, 100.0))
-    val washer = Washer(10.0, 10.0, Vector(-10.0, 0.0), 15.5, 25.0)
+    val washer = Washer(1.0, 10.0, Vector(-15.0, 0.0), 15.5, 25.0)
     for (i in 0..2) {
         washer.move(walls)
     }
