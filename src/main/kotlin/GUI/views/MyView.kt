@@ -1,6 +1,5 @@
 package GUI.views
 
-import GUI.Styles
 import javafx.beans.property.DoubleProperty
 import javafx.beans.property.ObjectProperty
 import javafx.beans.property.SimpleDoubleProperty
@@ -14,9 +13,8 @@ import logic.ModelSquare
 import logic.ModelThrow
 import tornadofx.*
 
-class MyView: View("Hello") {
+class MyView: View("Моделирование") {
     override val root = tabpane {
-        addClass(Styles.welcomeScreen)
         tab<Throw>()
         tab<Square>()
     }
