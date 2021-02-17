@@ -5,6 +5,7 @@ import tornadofx.tabpane
 
 class MyView: View("Моделирование") {
     override val root = tabpane {
+        tab<MashineLab2>()
         tab<Throw>()
         tab<Square>()
         tab<Hockey>()
