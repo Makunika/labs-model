@@ -1,21 +1,24 @@
 package logic.objects
 
 import kotlin.math.abs
+import kotlin.math.acos
+import kotlin.math.sin
 
 class Washer(val radius: Double, val weight: Double, vectorSpeed: Vector, x: Double, y: Double): MaterialObject(vectorSpeed, x, y) {
 
 
-    override fun move(walls: Array<Wall>) {
-        val unitVector = vectorSpeed.copy().normalize();
+    override fun move(walls: Array<Wall>): Array<Vector> {
+        val unitVector = vectorSpeed.copy().normalize().floor();
         val speedRunner = unitVector.copy()
         val speed = vectorSpeed.length()
-        var distAfter: Double
+        var position = arrayOf<Vector>()
         var x = this.x
         var y =  this.y
         while (speed >= speedRunner.length()) {
-            println("unit = $unitVector, vectorSpeed = $vectorSpeed, speedRunner = $speedRunner")
+            //println("unit = $unitVector, vectorSpeed = $vectorSpeed, speedRunner = $speedRunner")
             x += unitVector.x
             y += unitVector.y
+            position += Vector(x, y)
             println("x = $x, y = $y")
             for (wall in walls) {
                 val v = Vector(wall.x1, wall.y1, wall.x2, wall.y2);
@@ -24,14 +27,25 @@ class Washer(val radius: Double, val weight: Double, vectorSpeed: Vector, x: Dou
                 val dist = when {
                     Vector.dot(w0, v) >= 0 -> w0.length()
                     Vector.dot(w1, v) <= 0 -> w1.length()
-                    else -> abs(((wall.y1 - wall.y2) * x + (wall.x1 - wall.x2) * y + (wall.y1 * wall.x2 - wall.y2 * wall.x1)) / v.length())
+                    else -> {
+                        val vL = v.length()
+                        val w0L = w0.length()
+                        val w1L = w1.length()
+                        val angle = acos((w1L * w1L + vL * vL - w0L * w0L) / (2.0 * w1L * vL))
+                        println("angle = $angle")
+                        sin(angle) * w1L
+                    }
                 }
                 println("wall = $wall, dist = $dist")
                 if (dist <= radius) {
                     if (dist != radius) {
                         speedRunner.sub(unitVector)
+                    } else {
+                        if (Vector.dot(w0, v) >= 0 || Vector.dot(w1, v) <= 0) {
+                            break
+                        }
                     }
-                    println("unit = $unitVector, vectorSpeed = $vectorSpeed, speedRunner = $speedRunner, dist = $dist")
+                    //println("unit = $unitVector, vectorSpeed = $vectorSpeed, speedRunner = $speedRunner, dist = $dist")
                     speedRunner.rotate(wall.normal)
                     vectorSpeed.rotate(wall.normal)
                     unitVector.rotate(wall.normal)
@@ -44,9 +58,18 @@ class Washer(val radius: Double, val weight: Double, vectorSpeed: Vector, x: Dou
         speedRunner.sub(unitVector)
         this.x = x
         this.y = y
-        println("time = $time, ${toString()}, unit = $unitVector")
+        //println("time = $time, ${toString()}, unit = $unitVector")
         time++
         println("exit, this = $this\n\n")
+        val length = vectorSpeed.length() - (0.21 * 9.81)
+//        if (length <= 0) {
+//            vectorSpeed = Vector(0.0, 0.0)
+//        } else {
+//
+//        }
+        vectorSpeed.normalize().mul(length)
+        println("speed = ${vectorSpeed.length()}")
+        return position
     }
 
     override fun toString(): String {
@@ -58,7 +81,7 @@ class Washer(val radius: Double, val weight: Double, vectorSpeed: Vector, x: Dou
 
 fun main() {
     val walls = arrayOf(Wall(0.0, 0.0, 0.0, 100.0))
-    val washer = Washer(10.0, 10.0, Vector(-15.0, 0.0), 15.0, -10.0)
+    val washer = Washer(10.0, 10.0, Vector(-15.0, 15.0), 15.0, -10.0)
     for (i in 0..2) {
         washer.move(walls)
     }

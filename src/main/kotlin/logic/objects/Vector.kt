@@ -1,5 +1,6 @@
 package logic.objects
 
+import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
 data class Vector(var x: Double, var y: Double) {
@@ -57,6 +58,12 @@ data class Vector(var x: Double, var y: Double) {
 
     fun dist(vector: Vector) : Double {
         return sqrt((vector.x - this.x) * (vector.x - this.x) + (vector.y - this.y) * (vector.y - this.y))
+    }
+
+    fun floor(): Vector {
+        x = x.roundToInt().toDouble()
+        y = y.roundToInt().toDouble()
+        return this
     }
 
 
