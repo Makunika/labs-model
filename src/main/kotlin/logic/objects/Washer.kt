@@ -4,19 +4,22 @@ import kotlin.math.abs
 import kotlin.math.acos
 import kotlin.math.sin
 
-class Washer(val radius: Double, val weight: Double, vectorSpeed: Vector, x: Double, y: Double): MaterialObject(vectorSpeed, x, y) {
+class Washer(val radius: Double, var u: Double, vectorSpeed: Vector, x: Double, y: Double): MaterialObject(vectorSpeed, x, y) {
 
+    var L: Double = 0.0
 
     override fun move(walls: Array<Wall>): Array<Vector> {
         if (vectorSpeed.length().toInt() != 0) {
-            val unitVector = vectorSpeed.copy().normalize().floor();
+            val unitVector = vectorSpeed.copy().normalize()
+            println("unit = $unitVector")
             val speedRunner = unitVector.copy()
             val speed = vectorSpeed.length()
+            L += speed
             var position = arrayOf<Vector>()
             var x = this.x
             var y = this.y
             while (speed >= speedRunner.length()) {
-                //println("unit = $unitVector, vectorSpeed = $vectorSpeed, speedRunner = $speedRunner")
+                println("vectorSpeed = $vectorSpeed, speedRunner = $speedRunner")
                 x += unitVector.x
                 y += unitVector.y
                 position += Vector(x, y)
@@ -46,11 +49,11 @@ class Washer(val radius: Double, val weight: Double, vectorSpeed: Vector, x: Dou
                                 break
                             }
                         }
-                        //println("unit = $unitVector, vectorSpeed = $vectorSpeed, speedRunner = $speedRunner, dist = $dist")
+                        //println("vectorSpeed = $vectorSpeed, speedRunner = $speedRunner, dist = $dist")
                         speedRunner.rotate(wall.normal)
                         vectorSpeed.rotate(wall.normal)
                         unitVector.rotate(wall.normal)
-                        println("rotate!, unit = $unitVector, vectorSpeed = $vectorSpeed, speedRunner = $speedRunner, dist = $dist")
+                        println("rotate!, vectorSpeed = $vectorSpeed, speedRunner = $speedRunner, dist = $dist")
                         break
                     }
                 }
@@ -59,19 +62,16 @@ class Washer(val radius: Double, val weight: Double, vectorSpeed: Vector, x: Dou
             speedRunner.sub(unitVector)
             this.x = x
             this.y = y
-            //println("time = $time, ${toString()}, unit = $unitVector")
+            println("time = $time, ${toString()}, unit = $unitVector")
             time++
-            println("exit, this = $this\n\n")
-            val length = vectorSpeed.length() - (0.40 * 9.81)
+            val length = vectorSpeed.length() - (u * 9.81)
             if (length <= 0) {
                 vectorSpeed = Vector(0.0, 0.0)
             } else {
                 vectorSpeed.normalize().mul(length)
             }
-//        } else {
-//
-//        }
             println("speed = ${vectorSpeed.length()}")
+            println("exit, this = $this\n=========================================================================================\n")
             return position
         } else {
             return arrayOf()
@@ -79,7 +79,7 @@ class Washer(val radius: Double, val weight: Double, vectorSpeed: Vector, x: Dou
     }
 
     override fun toString(): String {
-        return "Washer(radius=$radius, weight=$weight, vectorSpeed=$vectorSpeed, x=$x, y=$y)"
+        return "Washer(radius=$radius, u=$u, vectorSpeed=$vectorSpeed, x=$x, y=$y, L=$L)"
     }
 
 
