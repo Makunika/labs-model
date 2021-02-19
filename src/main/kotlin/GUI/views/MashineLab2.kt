@@ -1,11 +1,16 @@
 package GUI.views
 
+import interfacesLab.Experiment
+import interfacesLab.Lab
+import interfacesLab.excel.StorageResult
 import javafx.application.Platform
 import javafx.scene.Parent
+import javafx.scene.control.Alert
 import javafx.scene.control.Button
 import javafx.scene.control.Label
 import javafx.scene.paint.Paint
 import javafx.scene.robot.Robot
+import logic.ModelSquare
 import tornadofx.*
 import java.awt.AWTException
 import kotlin.random.Random
@@ -14,28 +19,27 @@ import kotlin.random.Random
 /**
  * @author Максим Пшибло
  */
-class MashineLab2() : Fragment("Интерфейсы лаб2") {
+class MashineLab2 : Fragment("Интерфейсы лаб2") {
 
     override val root: Parent;
 
     private var time: Long = 0
     private var isActive = false
-    private var currentSize = 9
-    private var currentButton = Random.nextInt(0, 9)
+    private var currentSize = 2
+    private var currentButton = Random.nextInt(0, currentSize)
+    private var currentStep = 1
+    private var activeLab = Lab.Lab1
 
-    val buttons: Array<Button> = Array(9) {
+    private val buttons: Array<Button> = Array(9) {
         button {
             text = it.toString()
             action {
-                println("Hello!!!! im $text")
                 if (text.toInt() == currentButton && isActive) {
                     isActive = false
                     val t = System.currentTimeMillis() - time
                     statLabel.text = "$t мс"
-                    updateNumbers()
-                    currentButton = Random.nextInt(0, 9)
-                    number.text = currentButton.toString()
-                    spawnPosition()
+                    currentStep++
+                    StorageResult.instance.addExperimentToLab1(Experiment(currentSize, t))
                 }
             }
             style {
@@ -69,6 +73,9 @@ class MashineLab2() : Fragment("Интерфейсы лаб2") {
         number = label {
             text = currentButton.toString()
             style {
+                paddingRight = 50
+                paddingLeft = 40
+                paddingTop = 50
                 fontSize = 100.pt
                 fontFamily = "Courier New"
             }
@@ -87,25 +94,48 @@ class MashineLab2() : Fragment("Интерфейсы лаб2") {
                             buttons.forEach { button -> this.add(button) }
                         }
                     }
-                    center {
-                        pane {
-                            style {
-                                paddingRight = 50
-                                paddingLeft = 40
-                                paddingTop = 50
-                            }
-                            add(number)
-                        }
-                    }
+                }
+            }
+            center {
+                pane {
+                    add(number)
                 }
             }
             right {
-                add(statLabel)
-            }
-            setOnMouseMoved {
-                if (!isActive) {
-                    isActive = true
-                    time = System.currentTimeMillis()
+                form {
+                    style {
+                        paddingRight = 500.0
+                    }
+                    add(statLabel)
+                    button("Продолжить") {
+                        action {
+                            if (!isActive) {
+                                when(activeLab) {
+                                    Lab.Lab1 -> {
+                                        if (currentStep == activeLab.numberStep) {
+                                            currentStep = 1
+                                            currentSize++
+                                        }
+                                        if (currentSize == activeLab.list.last() + 1) {
+                                            StorageResult.instance.saveToExcel()
+                                            statLabel.text = "Закончено!"
+                                        }
+                                        updateNumbers()
+                                        currentButton = Random.nextInt(0, currentSize)
+                                        number.text = currentButton.toString()
+                                        spawnPosition()
+                                    }
+                                }
+                                isActive = true
+                                time = System.currentTimeMillis()
+                            }
+                        }
+                    }
+                    button("Отмена") {
+                        action {
+                            println("alo")
+                        }
+                    }
                 }
             }
         }
@@ -115,7 +145,7 @@ class MashineLab2() : Fragment("Интерфейсы лаб2") {
 
 
 
-    fun spawnPosition() {
+    private fun spawnPosition() {
         Platform.runLater {
             try {
                 val robot = Robot()
@@ -127,15 +157,23 @@ class MashineLab2() : Fragment("Интерфейсы лаб2") {
         }
     }
 
-    fun updateNumbers() {
+    private fun updateNumbers() {
         var s = arrayOf<Int>()
-        buttons.forEach { button ->
-            var n: Int
-            do {
-                n = Random.nextInt(0, currentSize)
-            } while (s.contains(n))
-            button.text = n.toString()
-            s += n
+        for(i in buttons.indices) {
+            if (i >= currentSize) {
+                buttons[i].isDisable = true
+                buttons[i].isVisible = false
+            } else {
+                buttons[i].isDisable = false
+                buttons[i].isVisible = true
+                var n: Int
+                do {
+                    n = Random.nextInt(0, currentSize)
+                } while (s.contains(n))
+                buttons[i].text = n.toString()
+                s += n
+            }
+
         }
     }
 }

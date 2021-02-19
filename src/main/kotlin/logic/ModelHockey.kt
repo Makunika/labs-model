@@ -16,7 +16,7 @@ class ModelHockey(private val time: Long): BaseModel() {
         Wall(50.0, 200.0, 70.0, 300.0),
         Wall(21.0,280.0, 69.0, 280.0)
     )
-    val washer = Washer(10.0, 10.0, Vector(-55.0, 55.0), 25.0, 0.0)
+    val washer = Washer(10.0, 10.0, Vector(-15.0, 55.0), 25.0, 0.0)
 
     override fun getTime(): Long {
         return time

@@ -58,21 +58,23 @@ class Hockey: Fragment("Хоккей") {
                                     var time = 1.seconds
                                     if (pair.second.isEmpty()) {
                                         println("empty")
-                                        circle.centerXProperty().animate(pair.first.x, time)
-                                        circle.centerYProperty().animate(pair.first.y, time)
+                                        circle.centerXProperty().set(pair.first.x)
+                                        circle.centerYProperty().set(pair.first.y)
                                         Thread.sleep(time.toMillis().toLong())
                                     } else {
                                         println("alo")
                                         time = (1.0 / pair.second.size).seconds
                                         for (vector in pair.second) {
                                             println("x = ${vector.x}, y = ${vector.y}")
-                                            circle.centerXProperty().animate(vector.x, time)
-                                            circle.centerYProperty().animate(vector.y, time)
+                                            circle.centerXProperty().set(vector.x)
+                                            circle.centerYProperty().set(vector.y)
                                             Thread.sleep(time.toMillis().toLong())
                                         }
                                         println("!!!!!!!!!!!!!!!")
                                     }
+
                                 }
+                                println("gavno")
                                 modelHockey = ModelHockey(60)
                             }
                         }

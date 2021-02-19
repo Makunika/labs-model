@@ -4,6 +4,6 @@ module alo {
     requires tornadofx;
     requires kotlin.stdlib;
     requires java.desktop;
-    opens GUI;
     opens GUI.views;
+    opens GUI;
 }
