@@ -1,6 +1,8 @@
 package logic.objects
 
+import kotlin.math.cos
 import kotlin.math.roundToInt
+import kotlin.math.sin
 import kotlin.math.sqrt
 
 data class Vector(var x: Double, var y: Double) {
@@ -35,6 +37,14 @@ data class Vector(var x: Double, var y: Double) {
     fun rotate(normal: Vector): Vector {
         val n = normal.copy()
         return this.sub(n.mul(2.0 * dot(n, this)))
+    }
+
+    fun rotate(angle: Double): Vector {
+        val radians = Math.toRadians(angle)
+        val length = this.length()
+        x = length * sin(radians)
+        y = length * cos(radians)
+        return this
     }
 
     fun normalize(): Vector {
