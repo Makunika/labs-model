@@ -1,9 +1,11 @@
 package GUI.views
 
+import GUI.Worker
 import javafx.beans.property.SimpleDoubleProperty
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleLongProperty
 import javafx.beans.property.SimpleStringProperty
+import javafx.concurrent.Service
 import javafx.scene.Group
 import javafx.scene.control.Alert
 import javafx.scene.paint.Color
@@ -33,7 +35,7 @@ class Hockey: Fragment("Хоккей") {
 
     lateinit var circle: Circle
     lateinit var group: Group
-    private var thread: Thread? = null
+    private var worker = Worker {}
 
 
     override val root = borderpane {
@@ -103,7 +105,7 @@ class Hockey: Fragment("Хоккей") {
                                         LResult.set(modelHockey.washer.L)
                                         timeResult.set("${modelHockey.washer.time} cек")
 
-                                        thread = thread {
+                                        worker.handle = {
                                             for (sc in array) {
                                                 var time = 1.seconds
                                                 if (sc.positions.isEmpty()) {
@@ -126,9 +128,11 @@ class Hockey: Fragment("Хоккей") {
                                             }
                                             println("L = ${modelHockey.washer.L}")
                                         }
+                                        worker.startWorker()
                                     }
                                 }
                                 catch (e: RuntimeException) {
+                                    e.printStackTrace()
                                     alert(Alert.AlertType.WARNING, "Ошибка", e.message)
                                 }
 
