@@ -115,7 +115,7 @@ class MashineLab2 : Fragment("Интерфейсы лаб2") {
                                 if (currentStep == activeLab.numberStep) {
                                     currentStep = 0
                                     if (activeLab.getCurrent() == activeLab.list.last()) {
-                                        StorageResult.instance.saveToExcel(activeLab.description)
+                                        StorageResult.instance.saveToExcel(activeLab)
                                         StorageResult.instance.clear()
                                         statLabel.text = "Закончено! Нажмите продолжить для следующего теста"
                                         if (!activeLab.hasNext())

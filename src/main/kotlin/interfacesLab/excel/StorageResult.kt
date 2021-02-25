@@ -23,9 +23,9 @@ class StorageResult private constructor() {
         println("clear storageLab")
     }
 
-    fun saveToExcel(description: String) {
+    fun saveToExcel(lab: Lab) {
         val excel: Excel = Excel.instance
-        excel.saveExperiment("Число элементов", "Время", getMiddleExperiment(storageLab, Lab.Lab1.list), currentColumn, description)
+        excel.saveExperiment("Число элементов", "Время", getMiddleExperiment(storageLab, lab.list), currentColumn, lab.description)
         excel.saveAndClose()
         currentColumn += 3
     }
