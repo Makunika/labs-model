@@ -35,6 +35,7 @@ class Excel(private val filename: String) {
     }
 
     fun saveAndClose() {
+        println("save to excel")
         try {
             val fileOut: OutputStream = FileOutputStream(filename)
             wb!!.write(fileOut)

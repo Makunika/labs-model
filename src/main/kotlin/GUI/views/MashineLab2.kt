@@ -9,6 +9,8 @@ import javafx.scene.control.Button
 import javafx.scene.control.Label
 import javafx.scene.paint.Paint
 import javafx.scene.robot.Robot
+import javafx.scene.text.FontPosture
+import javafx.scene.text.FontWeight
 import tornadofx.*
 import java.awt.AWTException
 import kotlin.random.Random
@@ -114,11 +116,13 @@ class MashineLab2 : Fragment("Интерфейсы лаб2") {
                                     currentStep = 0
                                     if (activeLab.getCurrent() == activeLab.list.last()) {
                                         StorageResult.instance.saveToExcel(activeLab.description)
+                                        StorageResult.instance.clear()
                                         statLabel.text = "Закончено! Нажмите продолжить для следующего теста"
-                                        activeLab = activeLab.nextLab()
-                                        if (activeLab == Lab.LabEnd) {
+                                        if (!activeLab.hasNext())
                                             statLabel.text = "Закончено! Все тесты пройдены!"
-                                        }
+                                        else
+                                            activeLab = activeLab.nextLab()
+
                                         isActive = false
                                         return@action
                                     } else {
@@ -151,7 +155,7 @@ class MashineLab2 : Fragment("Интерфейсы лаб2") {
         currentButton = Random.nextInt(0, activeLab.getCurrent())
         number.text = currentButton.toString()
         when (activeLab) {
-            Lab.Lab2_1_1, Lab.Lab2_1_2 -> {
+            Lab.Lab2_1_1 -> {
                 number.isVisible = false
                 buttons.forEach { button ->
                     if (button.text.toInt() == currentButton) {
@@ -159,7 +163,8 @@ class MashineLab2 : Fragment("Интерфейсы лаб2") {
                             backgroundColor = MultiValue(arrayOf(Paint.valueOf("#808080")))
                             textFill = Paint.valueOf("#ffff00")
                             fontSize = 14.pt
-                            fontFamily = activeLab.value
+                            fontFamily = "Courier New"
+                            fontStyle = FontPosture.findByName(activeLab.value)
                         }
                     } else {
                         button.style {
@@ -171,7 +176,48 @@ class MashineLab2 : Fragment("Интерфейсы лаб2") {
                     }
                 }
             }
-            Lab.Lab2_2_1, Lab.Lab2_2_2, Lab.Lab2_2_3, Lab.Lab2_2_4, Lab.Lab2_2_5 -> {
+            Lab.Lab2_1_2 -> {
+                number.isVisible = false
+                buttons.forEach { button ->
+                    if (button.text.toInt() == currentButton) {
+                        button.style {
+                            backgroundColor = MultiValue(arrayOf(Paint.valueOf("#808080")))
+                            textFill = Paint.valueOf("#ffff00")
+                            fontSize = 14.pt
+                            fontFamily = "Courier New"
+                            fontWeight = FontWeight.findByName(activeLab.value)
+                        }
+                    } else {
+                        button.style {
+                            backgroundColor = MultiValue(arrayOf(Paint.valueOf("#808080")))
+                            textFill = Paint.valueOf("#ffff00")
+                            fontSize = 14.pt
+                            fontFamily = "Courier New"
+                        }
+                    }
+                }
+            }
+            Lab.Lab2_1_3 -> {
+                number.isVisible = false
+                buttons.forEach { button ->
+                    if (button.text.toInt() == currentButton) {
+                        button.style {
+                            backgroundColor = MultiValue(arrayOf(Paint.valueOf("#808080")))
+                            textFill = Paint.valueOf("#ffff00")
+                            fontSize = 14.pt
+                            underline = activeLab.value.toBoolean()
+                        }
+                    } else {
+                        button.style {
+                            backgroundColor = MultiValue(arrayOf(Paint.valueOf("#808080")))
+                            textFill = Paint.valueOf("#ffff00")
+                            fontSize = 14.pt
+                            fontFamily = "Courier New"
+                        }
+                    }
+                }
+            }
+            Lab.Lab2_2_1, Lab.Lab2_2_2, Lab.Lab2_2_3, Lab.Lab2_2_4 -> {
                 number.isVisible = false
                 buttons.forEach { button ->
                     if (button.text.toInt() == currentButton) {
