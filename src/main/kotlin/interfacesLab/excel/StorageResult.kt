@@ -10,17 +10,24 @@ import kotlin.collections.ArrayList
  */
 class StorageResult private constructor() {
 
-    private val storageLab1: MutableList<Experiment> = LinkedList()
+    private var currentColumn = 0
+    private val storageLab: MutableList<Experiment> = LinkedList()
 
-    fun addExperimentToLab1(experiment: Experiment) {
-        storageLab1.add(experiment)
-        println("save LAB1 = { time: ${experiment.time}, number: ${experiment.numberPanel} }")
+    fun addExperimentToLab(experiment: Experiment) {
+        storageLab.add(experiment)
+        println("save LAB = { time: ${experiment.time}, number: ${experiment.numberPanel} }")
     }
 
-    fun saveToExcel() {
+    fun clear() {
+        storageLab.clear()
+        println("clear storageLab")
+    }
+
+    fun saveToExcel(description: String) {
         val excel: Excel = Excel.instance
-        excel.saveExperiment("Время", "Число элементов", getMiddleExperiment(storageLab1, Lab.Lab1.list), 0)
+        excel.saveExperiment("Число элементов", "Время", getMiddleExperiment(storageLab, Lab.Lab1.list), currentColumn, description)
         excel.saveAndClose()
+        currentColumn += 3
     }
 
     private fun getMiddleExperiment(storage: List<Experiment>, orderBy: Array<Int>): List<Experiment> {
@@ -44,34 +51,6 @@ class StorageResult private constructor() {
 
         return result
     }
-
-//    private fun getMiddleDouble(
-//        list: List<Pair<Long, Pair<Long, Long>>>,
-//        orderOne: List<Int>,
-//        orderTwo: List<Int>
-//    ): List<Pair<Long, Double>> {
-//        val result: MutableList<Pair<Long, Double>> = LinkedList<Pair<Long, Double>>()
-//        for (i in orderOne.indices) {
-//            val compareOne = orderOne[i]
-//            for (j in orderTwo.indices) {
-//                val compareTwo = orderTwo[j]
-//                val times: MutableList<Long> = ArrayList()
-//                for (pair in list) {
-//                    if (pair.snd.fst.toInt() == compareOne && pair.snd.snd.toInt() == compareTwo) {
-//                        times.add(pair.fst)
-//                    }
-//                }
-//                var middle: Long = 0
-//                for (time in times) {
-//                    middle += time
-//                }
-//                middle /= times.size.toLong()
-//                println("get middle for " + compareOne + ", " + compareTwo + " = " + middle + " by size = " + times.size)
-//                result.add(Pair(middle, compareOne.toDouble() / compareTwo.toDouble()))
-//            }
-//        }
-//        return result
-//    }
 
     companion object {
         val instance = StorageResult()

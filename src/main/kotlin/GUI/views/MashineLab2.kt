@@ -5,12 +5,10 @@ import interfacesLab.Lab
 import interfacesLab.excel.StorageResult
 import javafx.application.Platform
 import javafx.scene.Parent
-import javafx.scene.control.Alert
 import javafx.scene.control.Button
 import javafx.scene.control.Label
 import javafx.scene.paint.Paint
 import javafx.scene.robot.Robot
-import logic.ModelSquare
 import tornadofx.*
 import java.awt.AWTException
 import kotlin.random.Random
@@ -23,14 +21,16 @@ class MashineLab2 : Fragment("Интерфейсы лаб2") {
 
     override val root: Parent;
 
-    private var time: Long = 0
-    private var isActive = false
-    private var currentSize = 2
-    private var currentButton = Random.nextInt(0, currentSize)
-    private var currentStep = 1
-    private var activeLab = Lab.Lab1
+    private val width = 65
+    private val height = 40
 
-    private val buttons: Array<Button> = Array(9) {
+    private var time = 0L
+    private var isActive = false
+    private var currentStep = 0
+    private var activeLab = Lab.Lab1
+    private var currentButton = Random.nextInt(0, activeLab.getCurrent())
+
+    private val buttons: Array<Button> = Array(activeLab.list.last()) {
         button {
             text = it.toString()
             action {
@@ -39,7 +39,8 @@ class MashineLab2 : Fragment("Интерфейсы лаб2") {
                     val t = System.currentTimeMillis() - time
                     statLabel.text = "$t мс"
                     currentStep++
-                    StorageResult.instance.addExperimentToLab1(Experiment(currentSize, t))
+                    StorageResult.instance.addExperimentToLab(Experiment(activeLab.getCurrent(), t))
+                    println(activeLab.toString())
                 }
             }
             style {
@@ -49,13 +50,12 @@ class MashineLab2 : Fragment("Интерфейсы лаб2") {
                 fontSize = 14.pt
                 fontFamily = "Courier New"
             }
-            minHeight = 45.0
-            maxHeight = 45.0
-            prefHeight = 45.0
-            prefWidth = 65.0
-            minWidth = 65.0
-            maxWidth = 65.0
-
+            minHeight = this@MashineLab2.height.toDouble()
+            maxHeight = this@MashineLab2.height.toDouble()
+            prefHeight = this@MashineLab2.height.toDouble()
+            prefWidth = this@MashineLab2.width.toDouble()
+            minWidth = this@MashineLab2.width.toDouble()
+            maxWidth = this@MashineLab2.width.toDouble()
         }
     }
 
@@ -110,22 +110,25 @@ class MashineLab2 : Fragment("Интерфейсы лаб2") {
                     button("Продолжить") {
                         action {
                             if (!isActive) {
-                                when(activeLab) {
-                                    Lab.Lab1 -> {
-                                        if (currentStep == activeLab.numberStep) {
-                                            currentStep = 1
-                                            currentSize++
+                                if (currentStep == activeLab.numberStep) {
+                                    currentStep = 0
+                                    if (activeLab.getCurrent() == activeLab.list.last()) {
+                                        StorageResult.instance.saveToExcel(activeLab.description)
+                                        statLabel.text = "Закончено! Нажмите продолжить для следующего теста"
+                                        activeLab = activeLab.nextLab()
+                                        if (activeLab == Lab.LabEnd) {
+                                            statLabel.text = "Закончено! Все тесты пройдены!"
                                         }
-                                        if (currentSize == activeLab.list.last() + 1) {
-                                            StorageResult.instance.saveToExcel()
-                                            statLabel.text = "Закончено!"
-                                        }
-                                        updateNumbers()
-                                        currentButton = Random.nextInt(0, currentSize)
-                                        number.text = currentButton.toString()
-                                        spawnPosition()
+                                        isActive = false
+                                        return@action
+                                    } else {
+                                        activeLab.next()
                                     }
                                 }
+                                statLabel.text = ""
+                                updateNumbers()
+                                updateExperiment()
+                                spawnPosition()
                                 isActive = true
                                 time = System.currentTimeMillis()
                             }
@@ -133,7 +136,8 @@ class MashineLab2 : Fragment("Интерфейсы лаб2") {
                     }
                     button("Отмена") {
                         action {
-                            println("alo")
+                            println("Отмена $activeLab")
+                            isActive = false
                         }
                     }
                 }
@@ -143,13 +147,60 @@ class MashineLab2 : Fragment("Интерфейсы лаб2") {
         updateNumbers()
     }
 
+    private fun updateExperiment() {
+        currentButton = Random.nextInt(0, activeLab.getCurrent())
+        number.text = currentButton.toString()
+        when (activeLab) {
+            Lab.Lab2_1_1, Lab.Lab2_1_2 -> {
+                number.isVisible = false
+                buttons.forEach { button ->
+                    if (button.text.toInt() == currentButton) {
+                        button.style {
+                            backgroundColor = MultiValue(arrayOf(Paint.valueOf("#808080")))
+                            textFill = Paint.valueOf("#ffff00")
+                            fontSize = 14.pt
+                            fontFamily = activeLab.value
+                        }
+                    } else {
+                        button.style {
+                            backgroundColor = MultiValue(arrayOf(Paint.valueOf("#808080")))
+                            textFill = Paint.valueOf("#ffff00")
+                            fontSize = 14.pt
+                            fontFamily = "Courier New"
+                        }
+                    }
+                }
+            }
+            Lab.Lab2_2_1, Lab.Lab2_2_2, Lab.Lab2_2_3, Lab.Lab2_2_4, Lab.Lab2_2_5 -> {
+                number.isVisible = false
+                buttons.forEach { button ->
+                    if (button.text.toInt() == currentButton) {
+                        button.style {
+                            backgroundColor = MultiValue(arrayOf(Paint.valueOf("#808080")))
+                            textFill = Paint.valueOf("#ffff00")
+                            fontSize = (activeLab.value.toInt()).pt
+                            fontFamily = "Courier New"
+                        }
+                    } else {
+                        button.style {
+                            backgroundColor = MultiValue(arrayOf(Paint.valueOf("#808080")))
+                            textFill = Paint.valueOf("#ffff00")
+                            fontSize = 14.pt
+                            fontFamily = "Courier New"
+                        }
+                    }
+                }
+            }
+            else -> return
+        }
+    }
 
 
     private fun spawnPosition() {
         Platform.runLater {
             try {
                 val robot = Robot()
-                val coord = root.localToScreen(10.0 + 65 + 10, 10 + ((currentSize - 1) * (45 + 10) + 45).toDouble() / 2.0);
+                val coord = root.localToScreen(10.0 + width + 10, 10 + ((activeLab.getCurrent() - 1) * (height + 10) + height).toDouble() / 2.0);
                 robot.mouseMove(coord.x, coord.y)
             } catch (e: AWTException) {
                 e.printStackTrace()
@@ -160,7 +211,7 @@ class MashineLab2 : Fragment("Интерфейсы лаб2") {
     private fun updateNumbers() {
         var s = arrayOf<Int>()
         for(i in buttons.indices) {
-            if (i >= currentSize) {
+            if (i >= activeLab.getCurrent()) {
                 buttons[i].isDisable = true
                 buttons[i].isVisible = false
             } else {
@@ -168,7 +219,7 @@ class MashineLab2 : Fragment("Интерфейсы лаб2") {
                 buttons[i].isVisible = true
                 var n: Int
                 do {
-                    n = Random.nextInt(0, currentSize)
+                    n = Random.nextInt(0, activeLab.getCurrent())
                 } while (s.contains(n))
                 buttons[i].text = n.toString()
                 s += n
