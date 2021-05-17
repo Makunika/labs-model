@@ -11,7 +11,11 @@ class Wall(val x1: Double, val y1: Double, x2: Double, y2: Double) {
     var x2 = x2
         get() = field
 
-    val normal: Vector = Vector(y2 - y1, -(x2 - x1)).normalize();
+    var normal: Vector = Vector(y2 - y1, -(x2 - x1)).normalize()
+
+    fun rotateNormal() {
+        //normal = normal.rotate(180.0)
+    }
 
     fun rotate(degree: Double) {
         val radians = Math.toRadians(degree)

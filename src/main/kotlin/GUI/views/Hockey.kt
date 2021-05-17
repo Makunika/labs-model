@@ -109,7 +109,7 @@ class Hockey: Fragment("Хоккей") {
                                             for (sc in array) {
                                                 var time = 1.seconds
                                                 if (sc.positions.isEmpty()) {
-                                                    println("empty: x = ${sc.x}, y = ${sc.y}, speed = ${sc.speed}")
+                                                    //println("empty: x = ${sc.x}, y = ${sc.y}, speed = ${sc.speed}")
                                                     if (sc.speed.length().toInt() == 0) {
                                                         break
                                                     }
@@ -119,7 +119,7 @@ class Hockey: Fragment("Хоккей") {
                                                 } else {
                                                     time = (1.0 / sc.positions.size).seconds
                                                     for (vector in sc.positions) {
-                                                        println("x = ${vector.x}, y = ${vector.y}")
+                                                        //println("x = ${vector.x}, y = ${vector.y}")
                                                         circle.centerXProperty().set(vector.x)
                                                         circle.centerYProperty().set(-vector.y)
                                                         Thread.sleep(time.toMillis().toLong())

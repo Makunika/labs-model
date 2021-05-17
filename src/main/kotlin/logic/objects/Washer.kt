@@ -19,11 +19,11 @@ class Washer(val radius: Double, var u: Double, vectorSpeed: Vector, x: Double, 
             var x = this.x
             var y = this.y
             while (speed >= speedRunner.length()) {
-                println("vectorSpeed = $vectorSpeed, speedRunner = $speedRunner")
+                //println("vectorSpeed = $vectorSpeed, speedRunner = $speedRunner")
                 x += unitVector.x
                 y += unitVector.y
                 position += Vector(x, y)
-                println("x = $x, y = $y")
+                //println("x = $x, y = $y")
                 for (wall in walls) {
                     val v = Vector(wall.x1, wall.y1, wall.x2, wall.y2);
                     val w0 = Vector(x, y, wall.x1, wall.y1)
@@ -36,11 +36,11 @@ class Washer(val radius: Double, var u: Double, vectorSpeed: Vector, x: Double, 
                             val w0L = w0.length()
                             val w1L = w1.length()
                             val angle = acos((w1L * w1L + vL * vL - w0L * w0L) / (2.0 * w1L * vL))
-                            println("angle = $angle")
+                            //println("angle = $angle")
                             sin(angle) * w1L
                         }
                     }
-                    println("wall = $wall, dist = $dist")
+//                    println("wall = $wall, dist = $dist")
                     if (dist <= radius) {
                         if (dist != radius) {
                             speedRunner.sub(unitVector)
@@ -49,7 +49,9 @@ class Washer(val radius: Double, var u: Double, vectorSpeed: Vector, x: Double, 
                                 break
                             }
                         }
-                        //println("vectorSpeed = $vectorSpeed, speedRunner = $speedRunner, dist = $dist")
+                        println("====")
+                        println("wall = $wall, dist = $dist")
+                        println("vectorSpeed = $vectorSpeed, speedRunner = $speedRunner, dist = $dist")
                         speedRunner.rotate(wall.normal)
                         vectorSpeed.rotate(wall.normal)
                         unitVector.rotate(wall.normal)
@@ -70,7 +72,7 @@ class Washer(val radius: Double, var u: Double, vectorSpeed: Vector, x: Double, 
             } else {
                 vectorSpeed.normalize().mul(length)
             }
-            println("speed = ${vectorSpeed.length()}")
+            //println("speed = ${vectorSpeed.length()}")
             println("exit, this = $this\n=========================================================================================\n")
             return position
         } else {

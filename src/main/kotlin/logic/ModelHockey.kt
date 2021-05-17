@@ -76,6 +76,8 @@ class ModelHockey: BaseModel() {
         walls[2].rotate(angle.toDouble())
         walls[3].rotate(angle.toDouble())
         walls[4] = Wall(-100.0,300.0, 100.0, 300.0)
+        walls[0].rotateNormal()
+        walls[2].rotateNormal()
 
         washer.x = b.toDouble()
         washer.y = 0.0
