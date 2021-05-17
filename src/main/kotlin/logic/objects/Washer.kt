@@ -10,7 +10,7 @@ class Washer(val radius: Double, var u: Double, vectorSpeed: Vector, x: Double, 
 
     override fun move(walls: Array<Wall>): Array<Vector> {
         if (vectorSpeed.length().toInt() != 0) {
-            val unitVector = vectorSpeed.copy().normalize()
+            var unitVector = vectorSpeed.copy().normalize()
             println("unit = $unitVector")
             val speedRunner = unitVector.copy()
             val speed = vectorSpeed.length()
@@ -54,7 +54,13 @@ class Washer(val radius: Double, var u: Double, vectorSpeed: Vector, x: Double, 
                         println("vectorSpeed = $vectorSpeed, speedRunner = $speedRunner, dist = $dist")
                         speedRunner.rotate(wall.normal)
                         vectorSpeed.rotate(wall.normal)
-                        unitVector.rotate(wall.normal)
+                        val length = vectorSpeed.length() - (u * 15)
+                        if (length <= 0) {
+                            vectorSpeed = Vector(0.0, 0.0)
+                        } else {
+                            vectorSpeed.normalize().mul(length)
+                        }
+                        unitVector = vectorSpeed.copy().normalize()
                         println("rotate!, vectorSpeed = $vectorSpeed, speedRunner = $speedRunner, dist = $dist")
                         break
                     }

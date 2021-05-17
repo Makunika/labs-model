@@ -12,9 +12,10 @@ class ModelHockey: BaseModel() {
         Wall(50.0, 0.0, 50.00, 200.0),
         Wall(0.0, 200.0, 20.0, 300.0),
         Wall(50.0, 200.0, 70.0, 300.0),
-        Wall(21.0,280.0, 69.0, 280.0)
+        Wall(21.0,280.0, 69.0, 280.0),
+        Wall(0.0, 0.0, 50.0, 0.0)
     )
-    val washer = Washer(10.0, 0.45, Vector(-15.0, 55.0), 25.0, 0.0)
+    val washer = Washer(10.0, 0.45, Vector(-15.0, 55.0), 25.0, -15.0)
 
     var time: Int = 60
         set(value) {
@@ -60,8 +61,8 @@ class ModelHockey: BaseModel() {
         if (b + washer.radius >= l) {
             throw IllegalArgumentException("Wall: b + washer.radius >= l")
         }
-        if (angle < 0 || angle > 180) {
-            throw IllegalArgumentException("Wall: angle < 0 || angle > 180")
+        if (angle < 0 || angle > 90) {
+            throw IllegalArgumentException("Wall: angle < 0 || angle > 90")
         }
         if (h < washer.radius) {
             throw IllegalArgumentException("Wall: h < washer.radius")
@@ -71,15 +72,18 @@ class ModelHockey: BaseModel() {
             Wall(l.toDouble(), 0.0, l.toDouble(), h.toDouble()),
             Wall(0.0, h.toDouble(), 300.0, h.toDouble()),
             Wall(l.toDouble(), h.toDouble(), 300.0 + l.toDouble(), h.toDouble()),
-            Wall(21.0,280.0, 69.0, 280.0)
+            Wall(21.0,280.0, 69.0, 280.0),
+            Wall(0.0, 0.0, l.toDouble(), 0.0)
         )
         walls[2].rotate(angle.toDouble())
         walls[3].rotate(angle.toDouble())
-        walls[4] = Wall(-100.0,300.0, 100.0, 300.0)
+        walls[4] = Wall(walls[2].x2,walls[2].y2, walls[3].x2, walls[3].y2)
         walls[0].rotateNormal()
         walls[2].rotateNormal()
 
+        walls.forEach { println(it.toString()) }
+
         washer.x = b.toDouble()
-        washer.y = 0.0
+        washer.y = 15.0
     }
 }

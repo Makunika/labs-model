@@ -1,10 +1,7 @@
 package GUI.views
 
 import GUI.Worker
-import javafx.beans.property.SimpleDoubleProperty
-import javafx.beans.property.SimpleIntegerProperty
-import javafx.beans.property.SimpleLongProperty
-import javafx.beans.property.SimpleStringProperty
+import javafx.beans.property.*
 import javafx.concurrent.Service
 import javafx.scene.Group
 import javafx.scene.control.Alert
@@ -16,6 +13,7 @@ import logic.objects.SpeedCoords
 import logic.objects.Vector
 import tornadofx.*
 import java.lang.Math.sin
+import java.time.Duration
 import kotlin.concurrent.thread
 
 class Hockey: Fragment("Хоккей") {
@@ -31,6 +29,7 @@ class Hockey: Fragment("Хоккей") {
     private val b = SimpleIntegerProperty(20)
     private val LResult = SimpleDoubleProperty()
     private val timeResult = SimpleStringProperty()
+    private var timeBeetween = SimpleObjectProperty(Duration.ofSeconds(1))
 
 
     lateinit var circle: Circle
@@ -107,7 +106,7 @@ class Hockey: Fragment("Хоккей") {
 
                                         worker.handle = {
                                             for (sc in array) {
-                                                var time = 1.seconds
+
                                                 if (sc.positions.isEmpty()) {
                                                     //println("empty: x = ${sc.x}, y = ${sc.y}, speed = ${sc.speed}")
                                                     if (sc.speed.length().toInt() == 0) {
@@ -115,14 +114,13 @@ class Hockey: Fragment("Хоккей") {
                                                     }
                                                     circle.centerXProperty().set(sc.x)
                                                     circle.centerYProperty().set(-sc.y)
-                                                    Thread.sleep(time.toMillis().toLong())
+                                                    Thread.sleep(timeBeetween.get().toMillis())
                                                 } else {
-                                                    time = (1.0 / sc.positions.size).seconds
+                                                    val time = timeBeetween.get().toMillis().toDouble() / sc.positions.size
                                                     for (vector in sc.positions) {
-                                                        //println("x = ${vector.x}, y = ${vector.y}")
                                                         circle.centerXProperty().set(vector.x)
                                                         circle.centerYProperty().set(-vector.y)
-                                                        Thread.sleep(time.toMillis().toLong())
+                                                        Thread.sleep(time.toLong())
                                                     }
                                                 }
                                             }
@@ -136,6 +134,14 @@ class Hockey: Fragment("Хоккей") {
                                     alert(Alert.AlertType.WARNING, "Ошибка", e.message)
                                 }
 
+                            }
+                        }
+                        field("Скорость работы(x)") {
+                            textfield {
+                                text = "1.0"
+                                textProperty().addListener(ChangeListener { observable, oldValue, newValue ->
+                                    timeBeetween.set(Duration.ofMillis((1000 / newValue.toDouble()).toLong() ))
+                                })
                             }
                         }
                     }

@@ -14,7 +14,8 @@ class Wall(val x1: Double, val y1: Double, x2: Double, y2: Double) {
     var normal: Vector = Vector(y2 - y1, -(x2 - x1)).normalize()
 
     fun rotateNormal() {
-        //normal = normal.rotate(180.0)
+        normal.x = -normal.x
+        normal.y = -normal.y
     }
 
     fun rotate(degree: Double) {
@@ -22,6 +23,7 @@ class Wall(val x1: Double, val y1: Double, x2: Double, y2: Double) {
         val length = Vector(x1, y1, x2, y2).length()
         x2 = x1 + length * sin(radians)
         y2 = y1 + length * cos(radians)
+        normal = Vector(y2 - y1, -(x2 - x1)).normalize()
     }
 
     override fun toString(): String {
